@@ -62,7 +62,7 @@ link(19, 20)
 
 
 async def main():
-    if not await check_update('http://jr.yzhiee.com:9008/app', '12'):
+    if not await check_update('http://1.13.251.61:8080/', '12'):
         print('Yunzhi application has been updated. This version of script is depriciated now')
         input()
         return
