@@ -1,0 +1,4 @@
+aiohttp~=3.8.1
+geopy~=2.2.0
+networkx~=2.6.3
+pyDes~=2.0.1
