@@ -4,7 +4,7 @@ from typing import List, Tuple
 from pathgen import GEO_POINT
 from const import SAMPLE_PERIOD
 
-def sample(pass_points : List[GEO_POINT], speed1 : float, speed2 : float) -> List[GEO_POINT]:
+def sample(pass_points : List[GEO_POINT], speed1 : float, speed2 : float) -> List[Tuple[GEO_POINT, float]]:
     p = subprocess.Popen(['gen'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.stdin.write(f'{len(pass_points)}\n'.encode())
     # print(f'{len(pass_points)}\n')

@@ -165,7 +165,19 @@ class Runner :
         
         while True:
             try:
-                await self.__finish_run(task, id, start_time, managed_point, points[:task['raDislikes']-len(managed_point)], distance, cadence, (SAMPLE_PERIOD * sample_path_len) // 1000)
+                await self.__finish_run(
+                    task,
+                    id,
+                    start_time,
+                    managed_point,
+                    points[:task['raDislikes']-len(managed_point)],
+                    distance,
+                    cadence,
+                    (SAMPLE_PERIOD * sample_path_len) // 1000 + random.randint(
+                        -(SAMPLE_PERIOD * sample_path_len) // 10000,
+                        (SAMPLE_PERIOD * sample_path_len) // 10000
+                    )
+                )
             except BaseException as err:
                 print(f'Got error when send finishing: {err}\nTry again...')
                 await sleep(5)

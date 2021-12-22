@@ -3,7 +3,8 @@ from geopy.distance import geodesic
 import asyncio
 import aiohttp
 
-from util import YZSchool, YZSession, minperkm2mpers
+from const import APP_EDITION
+from util import YZSchool, minperkm2mpers, check_update
 from running import Runner
 
 
@@ -61,6 +62,11 @@ link(19, 20)
 
 
 async def main():
+    if not await check_update('http://81.70.49.179:8080/', '8'):
+        print('Yunzhi application has been updated. This version of script is depriciated now')
+        input()
+        return
+    
     try:
         school = YZSchool('http://210.45.246.53:8080/', '100')
         username = input('Username: ')
@@ -68,11 +74,7 @@ async def main():
         sess = await school.login(username, password)
         run = Runner(sess)
 
-        # *****CHANGE DEVICE NAME IF YOU NEED*****
-        run.device_name='HUAWEI(OXF-AN10)'
-        run.sdk_version = '7.1.2'
-        run.app_version = '2.0.1'
-        # *****CHANGE DEVICE NAME IF YOU NEED*****
+        run.app_version = APP_EDITION
 
         tasks = await run.get_tasks()
         
@@ -85,6 +87,12 @@ async def main():
         print(f"Minimal speed: {tasks[0]['raPaceMin']} min/km")
         print(f"Maximal speed: {tasks[0]['raPaceMax']} min/km")
 
+        print('Device name format: "Manufacturer(Model)"')
+        print('Example: HUAWEI(OXF-AN10)')
+        run.device_name = input('Device name: ')
+        print('Android SDK version is a single integer')
+        print('Example: 11')
+        run.sdk_version = input('Android SDK version: ')
         dis = float(input('Jounary (m): '))
         cadence = float(input('Step freq (step/min): '))
         speed1 = float(input('Startup speed (min/km): '))
@@ -100,6 +108,8 @@ async def main():
         sess.close()
     if school:
         school.close()
+    
+    input()
 
 
 if __name__ == '__main__':

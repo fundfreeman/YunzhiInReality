@@ -1,4 +1,5 @@
 import asyncio
+from aiohttp.connector import TCPConnector
 
 from yarl import URL
 from typing import Any, Iterable, List, Tuple, Type, Union, Optional
@@ -22,11 +23,11 @@ import time
 import random
 
 from pathgen import GEO_POINT
-from const import SAMPLE_PERIOD, POINT_BATCH
+from const import *
 default_headers = {
     'User-Agent': 'okhttp/3.12.0',
     'isApp': 'app',
-    'version': '2.1.1',
+    'version': APP_EDITION,
     'platform': 'android',
     'Content-Type': 'text/plain; charset=utf-8',
 }
@@ -85,19 +86,19 @@ class YZSession:
     def __init__(
         self, 
         base_url : Union[str, URL], 
-        school_id : str, 
-        account_id : str,
-        deviceid : str, 
-        token : str, 
-        connector : BaseConnector
+        school_id : str = None, 
+        account_id : str = None,
+        deviceid : str = None, 
+        token : str = None, 
+        connector : BaseConnector = None
     ) -> None :
         self.auth_headers = {
             'deviceid' : deviceid,
             'token' : token
         }
         self.http_sess = YZEncryptClientSession(
-            connector=connector,
-            connector_owner=False
+            connector=connector if connector else TCPConnector(),
+            connector_owner=False if connector else True
         )
         if not isinstance(base_url, URL):
             base_url = URL(base_url)
@@ -106,7 +107,12 @@ class YZSession:
         self.school_id = school_id
         self.account_id = account_id
 
-    
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        await self.http_sess.close()
+
     def __del__(self):
         try:
             loop = asyncio.get_event_loop()
@@ -143,8 +149,6 @@ class YZSession:
                     raise YZError(resp_json['msg'])
             except YZError as err:
                 raise err
-            except BaseException as err:
-                raise YZError(await resp.text()) from err
             
 
 class YZSchool:
@@ -196,9 +200,10 @@ class YZSchool:
                     'type': '1'
                 })
             ) as resp:
-            resp.raise_for_status()
 
             try:
+                if resp.status != 200:
+                    raise YZError(await resp.text())
                 resp_json = await resp.json()
                 if resp_json['code'] == 200:
                     return YZSession(
@@ -213,10 +218,14 @@ class YZSchool:
                     raise YZError(resp_json['msg'])
             except YZError as err:
                 raise err
-            except BaseException as err:
-                raise YZError(await resp.text()) from err
 
-
+async def check_update(base_url : Union[str, URL], version_code : str) -> bool:
+    async with YZSession(base_url) as sess:
+        data = await sess.APIpost_json('/getAppEdition', auth_headers=False, data={
+            'type': '2'
+        })
+        return version_code == data['appEdtitionNumber']
+        
 def parse_points(data : str) -> List[GEO_POINT]:
     str_points = data.split('|')
     points = []
