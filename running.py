@@ -174,7 +174,7 @@ class Runner :
                     distance,
                     cadence,
                     (SAMPLE_PERIOD * sample_path_len) // 1000 + random.randint(
-                        -(SAMPLE_PERIOD * sample_path_len) // 10000,
+                        0,
                         (SAMPLE_PERIOD * sample_path_len) // 10000
                     )
                 )
