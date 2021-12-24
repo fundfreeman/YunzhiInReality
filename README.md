@@ -16,7 +16,8 @@ The mapping graph consists of nodes with geometric location and edges which pres
 To generate a legal path to submit, the first thing is to generate route points that can pass a batch of checkpoints through regular roads.
 So a proper mapping graph is essential.
 
-In this version, the mapping graph is declared in [hfutxc_main.py](https://github.com/fundfreeman/YunzhiInReality/blob/main/hfutxc_main.py)
+In this version, the Xuancheng campus mapping graph is declared in [hfutxc_main.py](https://github.com/fundfreeman/YunzhiInReality/blob/main/hfutxc_main.py)
+Mapping graph for other campuses or college is welcomed.
 
 ## Sample generator
 In Yunzhi 2.0, the locations and corresponded speeds would be submitted.
