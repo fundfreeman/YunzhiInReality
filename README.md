@@ -4,7 +4,7 @@ A script to simulate YUNZHI sport app.
 # Download
 [Release](https://github.com/fundfreeman/YunzhiInReality/releases)
 
-The packed release is only available for windows x64 now.
+The packed release is only available for windows x64 now, and **can only work in Xuancheng campus**.
 
 # Contribute guide
 
