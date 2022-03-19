@@ -102,7 +102,7 @@ async def main():
         await run.run(tasks[0], g, dis, cadence, minperkm2mpers(speed1), minperkm2mpers(speed2))
         print('Done')
     except BaseException as err:
-        print('Fatal error: ' + err)
+        print(f'Fatal error: {err}')
     
     if sess:
         sess.close()
