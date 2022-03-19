@@ -28,14 +28,19 @@ class Runner :
     
 
     async def __start_run(self, task : Dict) -> Tuple[int, str]:
-        resp = await self.sess.APIpost_json('/run/start', data={
+        data = {
             'raId': str(task['id']),
             'raRunArea': task['raRunArea'],
             'raType': task['raType']
-        })
+        }
+
+        if task.get('isMorning', '') == 'R1':
+            data['isMorning'] = 'R1'
+        
+        resp = await self.sess.APIpost_json('/run/start', data=data)
+
         if resp['canSport'] != 'Y':
             raise YZError('sport is blocked. Reason: '+ resp['warnContent'])
-
         if resp['warnContent'] != '':
             print('YZ sport warning: ' + resp['warnContent'])
 
