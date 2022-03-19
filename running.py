@@ -39,9 +39,9 @@ class Runner :
         
         resp = await self.sess.APIpost_json('/run/start', data=data)
 
-        if resp['canSport'] != 'Y':
-            raise YZError('sport is blocked. Reason: '+ resp['warnContent'])
-        if resp['warnContent'] != '':
+        if resp.get('canSport') == 'N':
+            raise YZError('sport is blocked. Reason: '+ resp.get('warnContent'))
+        if resp.get('warnContent') != '':
             print('YZ sport warning: ' + resp['warnContent'])
 
         return resp['id'], resp['recordStartTime']
